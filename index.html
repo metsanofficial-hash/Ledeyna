@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Ledeayna'ya Kalbimden...</title>
+  <style>
+    body{
+      margin:0;
+      font-family: 'Georgia', serif;
+      background: linear-gradient(180deg,#1a0033,#0a001a);
+      color:#fdf4ff;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      min-height:100vh;
+      padding:1rem;
+      text-align:center;
+    }
+    .card{
+      max-width:760px;
+      background: rgba(255,255,255,0.05);
+      padding:2rem;
+      border-radius:20px;
+      box-shadow:0 8px 28px rgba(0,0,0,.7);
+      animation: fadeIn 1.5s ease;
+    }
+    @keyframes fadeIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+    h1{font-size:2rem;margin-bottom:1rem;color:#e0aaff;}
+    p{font-size:1.2rem;line-height:1.8}
+    button{
+      margin-top:1.5rem;
+      padding:0.9rem 1.6rem;
+      border:none;
+      border-radius:14px;
+      font-size:1rem;
+      font-weight:600;
+      cursor:pointer;
+      transition: transform .2s;
+    }
+    button:active{transform:scale(.95)}
+    .next{background:#a21caf;color:white;}
+    .yes{background:#16a34a;color:white;margin:0.5rem;}
+    .no{background:#dc2626;color:white;margin:0.5rem;}
+    .hidden{display:none}
+    #confettiArea{position:absolute;top:0;left:0;right:0;bottom:0;overflow:hidden;pointer-events:none;}
+    .piece{
+      width:10px;height:16px;
+      position:absolute;
+      top:-10%;
+      opacity:0.95;
+      transform-origin:center;
+      animation: fall 1600ms linear forwards;
+    }
+    @keyframes fall{
+      to { transform: translateY(120vh) rotate(540deg); opacity:1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1 id="title">Ledeayna'ya Satırlarım... 💌</h1>
+    <p id="text">Her şey bir tesadüf gibi başladı, ama biliyorum ki bu kaderin bana sunduğu en güzel mucize sensin, Ledeayna...</p>
+    <button id="nextBtn" class="next">Devam Et 💫</button>
+
+    <div id="choiceBtns" class="hidden">
+      <button id="yesBtn" class="yes">Evet 💖</button>
+      <button id="noBtn" class="no">Hayır 😅</button>
+    </div>
+
+    <h2 id="finalMsg" class="hidden"></h2>
+  </div>
+
+  <div id="confettiArea"></div>
+
+  <script>
+    const title = document.getElementById("title");
+    const text = document.getElementById("text");
+    const nextBtn = document.getElementById("nextBtn");
+    const choiceBtns = document.getElementById("choiceBtns");
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
+    const finalMsg = document.getElementById("finalMsg");
+    const confettiArea = document.getElementById("confettiArea");
+
+    let step = 0;
+    let noCount = 0;
+    let accepted = false;
+
+    // Ledeayna'ya özel duygusal metinler 💜
+    const messages = [
+      {t:"O İlk An", 
+       m:"Bir ekranın arkasında, hiç beklemediğim bir anda karşıma çıktın Ledeayna... O an kalbimde ince bir kıvılcım yandı."},
+      {t:"Mesafeler Vardı", 
+       m:"Evet, kilometreler vardı aramızda... ama kalbimin sana attığı her mesaj, mesafeleri eritti, yok etti, Ledeayna."},
+      {t:"Seninle Konuşmak", 
+       m:"Bazen bir cümle, bazen tek bir kelimen... İçimde tarifsiz bir huzur doğurdu. Seninle konuşmak, karanlık bir gecede yıldız bulmak gibiydi, Ledeayna."},
+      {t:"Gözlerim Seni Arıyor", 
+       m:"Ekranda gördüğüm her kelimede gözlerim seni aradı. Sesinde bulduğum sıcaklık, bana 'işte bu' dedirtti, Ledeayna."},
+      {t:"Kalbimden Taşan Sözler", 
+       m:"Şimdi kalbimde saklayamıyorum... Çünkü her şey içimde büyüdü ve artık taşıyor. Sana itiraf etmek zorundayım:"},
+      {t:"Ledeayna... Benimle Sevgili Olur musun?", 
+       m:"Seninle birlikte yaşamak istediğim binlerce an, sarılmak istediğim binlerce anı var... Seninle hayatı paylaşmak istiyorum, Ledeayna."}
+    ];
+
+    nextBtn.addEventListener("click", ()=>{
+      step++;
+      if(step < messages.length){
+        title.textContent = messages[step].t;
+        text.textContent = messages[step].m;
+        if(step === messages.length-1){
+          nextBtn.classList.add("hidden");
+          choiceBtns.classList.remove("hidden");
+        }
+      }
+    });
+
+    yesBtn.addEventListener("click", ()=>{
+      if(accepted) return;
+      accepted = true;
+      title.textContent = "💖 Sonsuza Dek Seninle Ledeayna";
+      text.textContent = "";
+      choiceBtns.classList.add("hidden");
+      finalMsg.classList.remove("hidden");
+      finalMsg.textContent = "Evet dediğin anda dünyam tamamlandı... Artık kalbim yalnız değil, çünkü sen varsın Ledeayna. 🎉";
+      launchConfetti();
+    });
+
+    noBtn.addEventListener("click", ()=>{
+      if(accepted) return;
+      noCount++;
+      noBtn.style.transform = `scale(${Math.max(0.5,1-0.2*noCount)})`;
+      if(noCount>=3){
+        noBtn.remove();
+      }
+    });
+
+    function launchConfetti(){
+      const colors = ["#ff6b81","#ffd166","#9b5cff","#50e3c2","#ff9aa2"];
+      for(let i=0;i<40;i++){
+        const el=document.createElement("div");
+        el.className="piece";
+        el.style.background=colors[i%colors.length];
+        el.style.left=(Math.random()*100)+"%";
+        el.style.width=(8+Math.random()*10)+"px";
+        el.style.height=(12+Math.random()*18)+"px";
+        el.style.animationDuration=(900+Math.random()*1200)+"ms";
+        confettiArea.appendChild(el);
+        setTimeout(()=>el.remove(),2200);
+      }
+    }
+  </script>
+</body>
+</html>
